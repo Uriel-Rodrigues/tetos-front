@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query"
-import AXIOS from "../services"
+import { AXIOS } from "../services"
 
 //criação de um hook personalizado que vai fazer parte do contexto onde os outros componentes podem usar
 export const useLogin = () => {

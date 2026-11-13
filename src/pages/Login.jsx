@@ -21,7 +21,7 @@ const Login = () => {
                 if (type == "success") {
                     sessionStorage.setItem("token", token);
                     sessionStorage.setItem("usuario", JSON.stringify(usuario)) //usuario vem como objetos precisamos converter para texto
-                    navigate("/home")
+                    navigate("/painel")
                 }
             }, 
             onError: ({response: {data : {type, description} } } ) => {

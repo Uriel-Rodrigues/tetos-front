@@ -1,11 +1,54 @@
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
+import { AXIOS, QUERYCLIENT } from "../services"
 
-export const useBuscarNiveis = () => {
+export const useBuscarNivel = () => {
     return useQuery({
         queryKey:["niveis"],
         queryFn: async () => {
             const res = await AXIOS.get("/niveis")
             return res.data
+        }
+    })
+}
+
+export const useCriarNivel= () => {
+    return useMutation ({
+        mutationFn: async (dados) => {
+            const res = await AXIOS.post ("/niveis", dados);
+            return res.data
+        },
+        onSuccess: () => {
+            QUERYCLIENT.invalidateQueries({ //aqui invalidamos um query, quando fazemos isso ele refaz as querys com a chave indicada atualizando os registros 
+                queryKey: ["niveis"]
+            })
+        }
+    })
+}
+
+export const useEditarUsuario = () => {
+    return useMutation ({
+        mutationFn: async (dados, id) => {
+            const res = await AXIOS.put(`/niveis/${id}`, dados);
+            return res.data
+        },
+        onSuccess: () => {
+            QUERYCLIENT.invalidateQueries({ //aqui invalidamos um query, quando fazemos isso ele refaz as querys com a chave indicada atualizando os registros 
+                queryKey: ["niveis"]
+            })
+        }
+    })
+}
+
+export const useDeletarUsuario = () => {
+    return useMutation ({
+        mutationFn: async (id) => {
+            const res = await AXIOS.delete(`/niveis/${id}`, dados);
+            return res.data
+        },
+        onSuccess: () => {
+            QUERYCLIENT.invalidateQueries({ //aqui invalidamos um query, quando fazemos isso ele refaz as querys com a chave indicada atualizando os registros 
+                queryKey: ["niveis"]
+            })
         }
     })
 }

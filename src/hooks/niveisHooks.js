@@ -25,9 +25,9 @@ export const useCriarNivel= () => {
     })
 }
 
-export const useEditarUsuario = () => {
+export const useEditarNivel = () => {
     return useMutation ({
-        mutationFn: async (dados, id) => {
+        mutationFn: async ({dados, id}) => {
             const res = await AXIOS.put(`/niveis/${id}`, dados);
             return res.data
         },
@@ -39,10 +39,10 @@ export const useEditarUsuario = () => {
     })
 }
 
-export const useDeletarUsuario = () => {
+export const useDeletarNivel = () => {
     return useMutation ({
         mutationFn: async (id) => {
-            const res = await AXIOS.delete(`/niveis/${id}`, dados);
+            const res = await AXIOS.delete(`/niveis/${id}`);
             return res.data
         },
         onSuccess: () => {

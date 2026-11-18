@@ -3,6 +3,7 @@ import Login from "../pages/login";
 import Home from "../pages/Home";
 import RotaProtegida from "./RotaProtegida";
 import Niveis from "../pages/Niveis";
+import Locatarios from "../pages/Locatarios"
 import PageLayout from "../layouts/PageLayout";
 import { useContext } from "react";
 import { AdminContext } from "../contexts/AdminProvaider";
@@ -20,6 +21,7 @@ const Rotas = () => {
                             <Route index element={<Home />} />
                             <Route path="niveis" element= {<Niveis />} />
                             <Route path="imoveis-tipo" element= {<ImoveisTipo />} />
+                            <Route path="locatarios" element= {<Locatarios />} />
                         </Route>
 
                     )

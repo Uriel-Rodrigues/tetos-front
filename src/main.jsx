@@ -1,3 +1,4 @@
+import './index.css'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { QUERYCLIENT } from './services'
 import { StrictMode } from 'react'

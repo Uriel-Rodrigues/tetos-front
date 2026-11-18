@@ -1,8 +1,8 @@
-import {createContext, useContext, useState} from "react";
+import {createContext, useState} from "react";
 
 export const AdminContext = createContext();
 
-const AdminProvider = ( {children} ) => {
+const AdminProvider = ({ children }) => {
     const [token, setToken] = useState(sessionStorage.getItem("token") || null) //pegando o token do session storage caso exista, caso não existir setamos como null
 
     function logout() {

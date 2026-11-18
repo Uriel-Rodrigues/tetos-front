@@ -9,6 +9,8 @@ const Niveis = () => {
     const  [mostrarCriar, setMostrarCriar] = useState(false)
     const [mostrarEditar, setMostrarEditar] = useState(false)
     const [dadosEditar, setDadosEditar] = useState([])
+    //gleidson
+    const [formEditar] = Form.useForm()
 
     const {data: niveis, isLoading: loadingNiveis} = useBuscarNivel();
     const {notification} = App.useApp()
@@ -52,12 +54,9 @@ const Niveis = () => {
     }
 
     function editar (dados) {
-         const id = dadosEditar.id 
-        editarNivel({
-                dados, 
-                id
-            }, ({
+        editarNivel(dados, ({
             onSuccess: ({type, description}) => {
+                setMostrarEditar(false)
                 notification[type] ({
                     description,
                     placement: "bottomRight"
@@ -72,10 +71,10 @@ const Niveis = () => {
         
     }
 
-    function editarButao (linha) {
-        setMostrarEditar(true)
-        setDadosEditar(linha)
-    }
+    // function editarButao (linha) {
+    //     setMostrarEditar(true)
+    //     setDadosEditar(linha)
+    // }
 
     return ( 
         <div>
@@ -107,7 +106,15 @@ const Niveis = () => {
                                 <Button
                                     icon={<LuPencil />}
                                     type="primary"
-                                    onClick={() => editarButao(linha)}
+                                    // onClick = {() => editarButao(linha) }
+                                    onClick={() => {
+                                        formEditar.setFieldValue("id", linha.id)
+                                        formEditar.setFieldValue("nome",linha.nome)
+                                        // filds preenche todos os campos
+                                        // formEditar.setFieldsValue(linha)
+                                        setMostrarEditar(true)
+                                    }}
+                                    
 
                                 />
                                 <Popconfirm
@@ -131,7 +138,7 @@ const Niveis = () => {
                 </Table>
             </div>
 
-            {/* componente antd para criar gaveta lateral */}
+            {/* componente antd para criar gaveta lateral de criar nivel */}
             <Drawer
                 title="Criar"
                 open={mostrarCriar}
@@ -162,6 +169,7 @@ const Niveis = () => {
                 </Form>
             </Drawer>
 
+            {/* componente antd para criar gaveta lateral de editar um nivel */}
             <Drawer 
                 title= "Editar"
                 open= {mostrarEditar}
@@ -170,11 +178,19 @@ const Niveis = () => {
                 <Form 
                     layout="vertical"
                     onFinish={editar}
+                    form={formEditar}
                 >
+                    <Form.Item
+                        name="id"
+                        hidden
+                    >
+                        <Input />
+                    </Form.Item>
+
                     <Form.Item 
                         label= "Nome"
                         name="nome"
-                        initialValue={dadosEditar.nome}
+                        // initialValue={dadosEditar.nome}
                         
                         rules={[{required:true, message: "compo obrigatorio"}]}
                     >

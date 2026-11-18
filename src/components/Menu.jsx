@@ -8,6 +8,7 @@ const Menu = () => {
             <nav className="flex flex-col *:leading-10 *:font-bold *:text-white! *:hover:bg-white/25! *:rounded *:duration-200 *:pl-4 *:[&.active]:bg-white! *:[&.active]:text-blue-500!">
                 <NavLink end to="/painel">Home</NavLink>
                 <NavLink end to="/painel/niveis">Niveis</NavLink>
+                <NavLink end to="/painel/imoveis-tipo">Imóveis Tipo</NavLink>
             </nav>
 
 

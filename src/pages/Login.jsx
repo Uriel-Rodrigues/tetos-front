@@ -1,14 +1,17 @@
 import { App, Button, Form, Input, message } from "antd";
 import { useLogin } from "../hooks/usuarioHooks";
 import { useNavigate } from "react-router";
+import { useContext } from "react";
+import { AdminContext } from "../contexts/AdminProvaider";
 
 const Login = () => {
 
     const navigate = useNavigate();
     //usamos biblioteca cant design para umport
     const {notification} = App.useApp()
-
     const {mutate: login, isPending: loginPanding} = useLogin();
+
+    const {token, setToken} = useContext(AdminContext) //pegando o contexto do admin provider
 
     function logar (dados) {
         login(dados, {
@@ -19,6 +22,7 @@ const Login = () => {
                 });
 
                 if (type == "success") {
+                    setToken(token); //setando o token no contexto do admin provider
                     sessionStorage.setItem("token", token);
                     sessionStorage.setItem("usuario", JSON.stringify(usuario)) //usuario vem como objetos precisamos converter para texto
                     navigate("/painel")

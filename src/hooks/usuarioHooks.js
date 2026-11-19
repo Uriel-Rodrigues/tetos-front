@@ -12,7 +12,7 @@ export const useLogin = () => {
     })
 }
 
-export const useBuscarUsuarios = () =>{
+export const useBuscarUsuario = () =>{
     return useQuery({
         queryKey: ["usuarios"],
         queryFn: async () => {
@@ -38,8 +38,8 @@ export const useCriarUsuario = () => {
 
 export const useEditarUsuario = () => {
     return useMutation ({
-        mutationFn: async (dados, id) => {
-            const res = await AXIOS.put(`/usuarios/${id}`, dados);
+        mutationFn: async (dados) => {
+            const res = await AXIOS.put(`/usuarios/${dados.id}`, dados);
             return res.data
         },
         onSuccess: () => {

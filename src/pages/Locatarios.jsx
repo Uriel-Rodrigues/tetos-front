@@ -9,7 +9,9 @@ const Locatarios = () => {
     const [mostrarEditar, setMostrarEditar] = useState(false)
     // const [dadosEditar, setDadosEditar] = useState([])
     //gleidson
+    const [formCriar] = Form.useForm()
     const [formEditar] = Form.useForm()
+
 
     const {data: locatarios, isLoading: loadingLocatarios} = useBuscarLocatario();
     const {notification} = App.useApp()
@@ -22,6 +24,7 @@ const Locatarios = () => {
         criarLocatario(dados, {
             onSuccess: ({type, description}) => {
                 setMostrarCriar(false); //fecha a gaveta se tudo der certo
+                formCriar.resetFields()
                 notification[type]({
                     description,
                     placement: "bottomRight"
@@ -102,7 +105,7 @@ const Locatarios = () => {
                         dataIndex="telefone"
                     />
                     <Table.Column
-                        title="cpf_cnpj"
+                        title="CPF/CNPJ"
                         dataIndex="cpf_cnpj"
                     />
                     <Table.Column
@@ -154,6 +157,7 @@ const Locatarios = () => {
                 <Form
                     layout="vertical"
                     onFinish={criar}
+                    form={formCriar}
                 >
                     <Form.Item 
                         label="Nome"

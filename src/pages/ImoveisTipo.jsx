@@ -1,6 +1,6 @@
 import { App, Button, Drawer, Form, Input, Popconfirm, Table } from "antd";
 import { LuPencil, LuPlus, LuTrash2 } from "react-icons/lu";
-import { useBuscarImoveisTipo, useCriarImoveisTipo, useDeletarImoveisTipo, useEditarImoveisTipo } from "../hooks/ImoveisTipoHooks";
+import { useBuscarImoveisTipo, useCriarImoveisTipo, useDeletarImoveisTipo, useEditarImoveisTipo } from "../hooks/imoveisTipoHooks";
 import { useState } from "react";
 import { QUERYCLIENT } from "../services";
 

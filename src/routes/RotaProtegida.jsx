@@ -1,7 +1,7 @@
 // import { Navigate } from "react-router";
-// import { AXIOS } from "../services";
+//import { AXIOS } from "../services";
 // import { useContext } from "react";
-// import { AdminContext } from "../contexts/AdminProvaider";
+//import { AdminContext } from "../contexts/AdminProvaider";
 
 // const RotaProtegida = ({ children }) => {
 
@@ -39,6 +39,9 @@
 
 import { useContext, useEffect } from "react";
 import { Navigate } from "react-router-dom";
+import { AXIOS } from "../services";
+import { AdminContext } from "../contexts/AdminProvaider";
+
 
 const RotaProtegida = ({ children }) => {
 

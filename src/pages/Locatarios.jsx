@@ -1,10 +1,11 @@
 import { App, Button, Drawer, Form, Input, Popconfirm, Table } from "antd";
 import { LuPencil, LuPlus, LuTrash2 } from "react-icons/lu";
 import { useBuscarLocatario, useCriarLocatario, useDeletarLocatario, useEditarLocatario } from "../hooks/locatariosHooks";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
+import { useLocation } from "react-router";
 
 const Locatarios = () => {
-
+    const location = useLocation()
     const  [mostrarCriar, setMostrarCriar] = useState(false)
     const [mostrarEditar, setMostrarEditar] = useState(false)
     // const [dadosEditar, setDadosEditar] = useState([])
@@ -77,6 +78,12 @@ const Locatarios = () => {
     //     setMostrarEditar(true)
     //     setDadosEditar(linha)
     // }
+
+    useEffect(() => {
+        if(location.state?.abrirCadastroLocatario){
+            setMostrarCriar(true)
+        }
+    },[])
 
     return ( 
         <div>

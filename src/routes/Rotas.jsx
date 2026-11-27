@@ -10,6 +10,8 @@ import { AdminContext } from "../contexts/AdminProvaider";
 import ImoveisTipo from "../pages/ImoveisTipo";
 import Usuarios from "../pages/Usuarios";
 import Imoveis from "../pages/Imoveis";
+import HistoricoManutencao from "../pages/HistoricoManutencao";
+import HistoricoImovel from "../pages/HistoricoImovel";
 
 const Rotas = () => {
     const {token} = useContext(AdminContext) //pegando o contexto do admin provider
@@ -26,6 +28,8 @@ const Rotas = () => {
                             <Route path="locatarios" element= {<Locatarios />} />
                             <Route path="usuarios" element= {<Usuarios />} />
                             <Route path="imoveis" element= {<Imoveis />} />
+                            <Route path="HistoricoManutencao" element= {<HistoricoManutencao />} />
+                            <Route path="HistoricoImovel" element= {<HistoricoImovel />} />
                         </Route>
 
                     )

@@ -2,11 +2,13 @@ import { App, Button, Drawer, Form, Input, Popconfirm, Select, Table } from "ant
 import { LuPencil, LuPlus, LuTrash2 } from "react-icons/lu";
 import { useBuscarUsuario, useCriarUsuario, useDeletarUsuario, useEditarUsuario } from "../hooks/usuarioHooks";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useBuscarNivel } from "../hooks/niveisHooks";
 import Password from "antd/es/input/Password";
+import { useLocation } from "react-router";
 
 const Usuarios = () => {
+    const location = useLocation()
 
     const  [mostrarCriar, setMostrarCriar] = useState(false)
     const [mostrarEditar, setMostrarEditar] = useState(false)
@@ -83,6 +85,12 @@ const Usuarios = () => {
     //     setMostrarEditar(true)
     //     setDadosEditar(linha)
     // }
+
+    useEffect(() => {
+        if(location.state?.abrirCadastro){
+            setMostrarCriar(true)
+        }
+    },[])
 
     return ( 
         <div>

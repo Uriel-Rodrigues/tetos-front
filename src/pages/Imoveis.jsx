@@ -1,12 +1,16 @@
-import { App, Button, Drawer, Form, Image, Input, Popconfirm, Table } from "antd";
+import { App, Button, Drawer, Form, Image, Input, Popconfirm, Select, Table, Upload } from "antd";
 import { LuImageOff, LuPencil, LuPlus, LuTrash2 } from "react-icons/lu";
 import { useBuscarImovel, useCriarImovel, useDeletarImovel, useEditarImovel } from "../hooks/imoveisHooks";
 import {useBuscarImoveisTipo} from "../hooks/imoveisTipoHooks"
 import {useBuscarLocatario} from "../hooks/locatariosHooks"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { APIURL, QUERYCLIENT } from "../services";
+import { BiPlus } from "react-icons/bi";
+import { useLocation } from "react-router";
 
 const Imoveis = () => {
+
+    const location = useLocation()
 
     const  [mostrarCriar, setMostrarCriar] = useState(false)
     const [mostrarEditar, setMostrarEditar] = useState(false)
@@ -24,7 +28,27 @@ const Imoveis = () => {
 
     //função que vai coletar os dados encaminhados pelo formulario e mandar para o hook criarImovel
     function criar (dados) {
-        criarImovel(dados, {
+        const formData = new FormData();
+
+        // Percorre os campos do formulário
+        Object.entries(dados).forEach(([chave, valor]) => {
+            if (chave !== "imagem" && valor !== undefined && valor !== null) {
+                formData.append(chave, valor);
+            }
+        });
+
+        // Recupera o arquivo selecionado no Upload
+        const arquivo = dados.imagem?.[0]?.originFileObj;
+
+        if (arquivo) {
+            formData.append("imagem", arquivo);
+        }
+
+        for (const [chave, valor] of formData.entries()) {
+        console.log(chave, valor);
+        }
+
+        criarImovel(formData, {
             onSuccess: ({type, description}) => {
                 setMostrarCriar(false); //fecha a gaveta se tudo der certo
                 notification[type]({
@@ -59,7 +83,28 @@ const Imoveis = () => {
     }
 
     function editar (dados) {
-        editarImovel(dados, ({
+        const formData = new FormData();
+
+        // Percorre os campos do imóvel
+        Object.entries(dados).forEach(([chave, valor]) => {
+
+            if (chave === "imagem") {
+
+                // Recupera o arquivo original, caso uma nova imagem tenha sido selecionada
+                const arquivo = valor?.[0]?.originFileObj;
+
+                if (arquivo) {
+                    formData.append("imagem", arquivo);
+                }
+
+                } else if (valor !== undefined && valor !== null) {
+
+                    formData.append(chave, valor);
+
+                }
+
+            });
+        editarImovel({id:dados.id, formData}, ({
             onSuccess: ({type, description}) => {
                 setMostrarEditar(false)
                 notification[type] ({
@@ -76,10 +121,11 @@ const Imoveis = () => {
         
     }
 
-    // function editarButao (linha) {
-    //     setMostrarEditar(true)
-    //     setDadosEditar(linha)
-    // }
+    useEffect(() => {
+        if(location.state?.abrirCadastroImovel){
+            setMostrarCriar(true)
+        }
+    },[])
 
     return ( 
         <div>
@@ -167,10 +213,12 @@ const Imoveis = () => {
                                     type="primary"
                                     // onClick = {() => editarButao(linha) }
                                     onClick={() => {
-                                        formEditar.setFieldValue("id", linha.id)
-                                        formEditar.setFieldValue("nome",linha.nome)
+                                        // formEditar.setFieldValue("id", linha.id)
+                                        // formEditar.setFieldValue("nome",linha.nome)
                                         // filds preenche todos os campos
-                                        // formEditar.setFieldsValue(linha)
+                                        formEditar.setFieldsValue({
+                                            ...linha,
+                                            imagem: linha.imagem? [{uid:"-1",name: "imagem.jpg", status: "done", url:`${APIURL}${linha.imagem}`}]: []})
                                         setMostrarEditar(true)
                                     }}
                                     
@@ -208,14 +256,184 @@ const Imoveis = () => {
                     onFinish={criar}
                 >
                     <Form.Item 
-                        label="Nome"
-                        name="nome"
-                        rules={[{required:true, message: "compo obrigatorio"}]}
+                        label="Matricula"
+                        name="matricula"
                     >
-
-                        <Input placeholder="nome do tipo do imovel"/>
+                        <Input placeholder="matricula do imovel"/>
                     </Form.Item>
 
+                    <Form.Item 
+                        label="Bairro"
+                        name="bairro"
+                        rules={[{required:true, message:"campo obrigatorio"}]}
+                    >
+                        <Input placeholder="Bairro do imovel"/>
+                    </Form.Item>
+                    
+                    <Form.Item 
+                        label="Cidade"
+                        name="cidade"
+                        rules={[{required:true, message:"campo obrigatorio"}]}
+                    >
+                        <Input placeholder="cidade do imovel"/>
+                    </Form.Item>
+                    
+                    <Form.Item 
+                        label="Estado"
+                        name="estado"
+                        rules={[{required:true, message:"campo obrigatorio"}]}
+                    >
+                        <Input placeholder="sigla do estado do imovel"/>
+                    </Form.Item>
+
+                    <Form.Item 
+                        label="Numero"
+                        name="numero"
+                        rules={[{required:true, message:"campo obrigatorio"}]}
+                    >
+                        <Input placeholder="numero do imovel"/>
+                    </Form.Item>
+                    
+                    <Form.Item 
+                        label="Complemento"
+                        name="complemento"
+                    >
+                        <Input placeholder="complemento"/>
+                    </Form.Item>
+                    
+                    <Form.Item 
+                        label="Cep"
+                        name="cep"
+                        rules={[{required: true, message: "compo obrigatorio"}]}
+                    >
+                        <Input placeholder="Cep"/>
+                    </Form.Item>
+
+                    <Form.Item 
+                        label="Valor do Aluguel"
+                        name="valor_aluguel"
+                        rules={[{required: true, message: "compo obrigatorio"}]}
+                    >
+                        <Input placeholder="Valor do Aluguel"/>
+                    </Form.Item>
+                    
+                    <Form.Item 
+                        label="iptu"
+                        name="iptu"
+                    >
+                        <Input placeholder="iptu"/>
+                    </Form.Item>
+                    
+                    <Form.Item 
+                        label="Valor do Condominio"
+                        name="valor_condominio"
+                        
+                    >
+                        <Input placeholder="Valor do Condominio"/>
+                    </Form.Item>
+
+                    <Form.Item 
+                        label="Metragem"
+                        name="metragem"
+                        rules={[{required: true, message: "compo obrigatorio"}]}
+                    >
+                        <Input placeholder="Metragem do Condominio"/>
+                    </Form.Item>
+
+                    <Form.Item 
+                        label="Quartos"
+                        name="quartos"
+                        rules={[{required: true, message: "compo obrigatorio"}]}
+                    >
+                        <Input placeholder="numero de quartos"/>
+                    </Form.Item>
+                    
+                    <Form.Item 
+                        label="Suites"
+                        name="suites"
+                        rules={[{required: true, message: "compo obrigatorio"}]}
+                    >
+                        <Input placeholder="numero de suites"/>
+                    </Form.Item>
+
+                    <Form.Item 
+                        label="Banheiros"
+                        name="banheiros"
+                        rules={[{required: true, message: "compo obrigatorio"}]}
+                    >
+                        <Input placeholder="numero de banheiros"/>
+                    </Form.Item>
+
+                    <Form.Item 
+                        label="Garagens"
+                        name="garagens"
+                    >
+                        <Input placeholder="numero de garagens"/>
+                    </Form.Item>
+                    
+                    <Form.Item 
+                        label="Logradouro"
+                        name="logradouro"
+                        rules={[{required: true, message:"compo obrigatorio"}]}
+                    >
+                        <Input placeholder="logradouro do imovel"/>
+                    </Form.Item>
+
+                    <Form.Item 
+                        label="tipo de movel"
+                        name="tipo_id"
+                        rules={[{required: true, message:"compo obrigatorio"}]}
+                    >
+                        <Select
+                            placeholder= "escolha um tipo de imovel"
+                            options={(tipos || []).map(tipo => {
+                                return {
+                                    label: tipo.nome,
+                                    value: tipo.id
+                                }
+                            })}
+                        />
+                    </Form.Item>
+
+                    <Form.Item 
+                        label="Locatario"
+                        name="locatario_id"
+                    >
+                        <Select
+                            placeholder= "escolha um tipo de imovel"
+                            options={(locatarios || []).map(locatario => {
+                                return {
+                                    label: locatario.nome,
+                                    value: locatario.id
+                                }
+                            })}
+                        />
+                    </Form.Item>
+                    
+                    <Form.Item 
+                        label="Imagem do imovel"
+                        name="imagem"
+                        valuePropName="fileList"
+                        getValueFromEvent={(e) => e?.fileList || []}
+                    >
+                        <Upload
+                            listType="picture-card"
+                            maxCount={1}
+                            beforeUpload={() => false}
+                            accept="image/"
+                        >
+                            <button
+                                type="button"
+                                style={{border: 0, background: 'none'}}
+                            >
+                                <BiPlus />
+                                <div style={{marginTop:8}}>enviar imagm</div>
+                                
+                            </button>
+
+                        </Upload>
+                    </Form.Item>
+                    
                     <div className="flex justify-end">
                         <Button 
                             type="primary"
@@ -247,14 +465,182 @@ const Imoveis = () => {
                     </Form.Item>
 
                     <Form.Item 
-                        label= "Nome"
-                        name="nome"
-                        // initialValue={dadosEditar.nome}
-                        
-                        rules={[{required:true, message: "compo obrigatorio"}]}
+                        label="Matricula"
+                        name="matricula"
                     >
-                        <Input placeholder="Nome do Imovel"/>
+                        <Input placeholder="matricula do imovel"/>
+                    </Form.Item>
+
+                    <Form.Item 
+                        label="Bairro"
+                        name="bairro"
+                        rules={[{required:true, message:"campo obrigatorio"}]}
+                    >
+                        <Input placeholder="Bairro do imovel"/>
+                    </Form.Item>
                     
+                    <Form.Item 
+                        label="Cidade"
+                        name="cidade"
+                        rules={[{required:true, message:"campo obrigatorio"}]}
+                    >
+                        <Input placeholder="cidade do imovel"/>
+                    </Form.Item>
+                    
+                    <Form.Item 
+                        label="Estado"
+                        name="estado"
+                        rules={[{required:true, message:"campo obrigatorio"}]}
+                    >
+                        <Input placeholder="sigla do estado do imovel"/>
+                    </Form.Item>
+
+                    <Form.Item 
+                        label="Numero"
+                        name="numero"
+                        rules={[{required:true, message:"campo obrigatorio"}]}
+                    >
+                        <Input placeholder="numero do imovel"/>
+                    </Form.Item>
+                    
+                    <Form.Item 
+                        label="Complemento"
+                        name="complemento"
+                    >
+                        <Input placeholder="complemento"/>
+                    </Form.Item>
+                    
+                    <Form.Item 
+                        label="Cep"
+                        name="cep"
+                        rules={[{required: true, message: "compo obrigatorio"}]}
+                    >
+                        <Input placeholder="Cep"/>
+                    </Form.Item>
+
+                    <Form.Item 
+                        label="Valor do Aluguel"
+                        name="valor_aluguel"
+                        rules={[{required: true, message: "compo obrigatorio"}]}
+                    >
+                        <Input placeholder="Valor do Aluguel"/>
+                    </Form.Item>
+                    
+                    <Form.Item 
+                        label="iptu"
+                        name="iptu"
+                    >
+                        <Input placeholder="iptu"/>
+                    </Form.Item>
+                    
+                    <Form.Item 
+                        label="Valor do Condominio"
+                        name="valor_condominio"
+                        
+                    >
+                        <Input placeholder="Valor do Condominio"/>
+                    </Form.Item>
+
+                    <Form.Item 
+                        label="Metragem"
+                        name="metragem"
+                        rules={[{required: true, message: "compo obrigatorio"}]}
+                    >
+                        <Input placeholder="Metragem do Condominio"/>
+                    </Form.Item>
+
+                    <Form.Item 
+                        label="Quartos"
+                        name="quartos"
+                        rules={[{required: true, message: "compo obrigatorio"}]}
+                    >
+                        <Input placeholder="numero de quartos"/>
+                    </Form.Item>
+                    
+                    <Form.Item 
+                        label="Suites"
+                        name="suites"
+                        rules={[{required: true, message: "compo obrigatorio"}]}
+                    >
+                        <Input placeholder="numero de suites"/>
+                    </Form.Item>
+
+                    <Form.Item 
+                        label="Banheiros"
+                        name="banheiros"
+                        rules={[{required: true, message: "compo obrigatorio"}]}
+                    >
+                        <Input placeholder="numero de banheiros"/>
+                    </Form.Item>
+
+                    <Form.Item 
+                        label="Garagens"
+                        name="garagens"
+                    >
+                        <Input placeholder="numero de garagens"/>
+                    </Form.Item>
+                    
+                    <Form.Item 
+                        label="Logradouro"
+                        name="logradouro"
+                        rules={[{required: true, message:"compo obrigatorio"}]}
+                    >
+                        <Input placeholder="logradouro do imovel"/>
+                    </Form.Item>
+
+                    <Form.Item 
+                        label="tipo de movel"
+                        name="tipo_id"
+                        rules={[{required: true, message:"compo obrigatorio"}]}
+                    >
+                        <Select
+                            placeholder= "escolha um tipo de imovel"
+                            options={(tipos || []).map(tipo => {
+                                return {
+                                    label: tipo.nome,
+                                    value: tipo.id
+                                }
+                            })}
+                        />
+                    </Form.Item>
+
+                    <Form.Item 
+                        label="Locatario"
+                        name="locatario_id"
+                    >
+                        <Select
+                            placeholder= "escolha um tipo de imovel"
+                            options={(locatarios || []).map(locatario => {
+                                return {
+                                    label: locatario.nome,
+                                    value: locatario.id
+                                }
+                            })}
+                        />
+                    </Form.Item>
+                    
+                    <Form.Item 
+                        label="Imagem do imovel"
+                        name="imagem"
+                        valuePropName="fileList"
+                        getValueFromEvent={(e) => e?.fileList || []}
+                    >
+                        <Upload
+                            listType="picture-card"
+                            maxCount={1}
+                            beforeUpload={() => false}
+                            accept="image/*"
+                        >
+                            <button
+                                type="button"
+                                style={{border: 0, background: 'none'}}
+                            >
+                                <BiPlus />
+                                <div style={{marginTop:8}}>enviar imagm</div>
+                                
+                            </button>
+
+                        </Upload>
                     </Form.Item>
                     
                     <div className="flex justify-end">
@@ -270,7 +656,6 @@ const Imoveis = () => {
                 </Form>
 
             </Drawer>
-
 
         </div>
      );

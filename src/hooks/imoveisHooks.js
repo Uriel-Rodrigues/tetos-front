@@ -27,8 +27,8 @@ export const useCriarImovel= () => {
 
 export const useEditarImovel = () => {
     return useMutation ({
-        mutationFn: async (dados) => {
-            const res = await AXIOS.put(`/imoveis/${dados.id}`, dados);
+        mutationFn: async ({id, formData}) => {
+            const res = await AXIOS.put(`/imoveis/${id}`, formData);
             return res.data
         },
         onSuccess: () => {
